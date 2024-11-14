@@ -1,0 +1,47 @@
+// {
+//   "compilerOptions": {
+//     "target": "ES2017",                         // Set ECMAScript target version (use ES6 for modern browsers)
+//     "module": "ESNext",                      // Use ES modules (better for frontend)
+//     "moduleResolution": "node",              // Use Node module resolution
+//     "esModuleInterop": true,                 // Allow default imports from modules without a default export
+//     "declaration": true,                     // Generate .d.ts declaration files
+//     "outDir": "./dist",                      // Output compiled JavaScript files to the "dist" directory
+//     "strict": true,                          // Enable strict type-checking options
+//     "skipLibCheck": true,                    // Skip type checking of declaration files (to speed up compilation)
+//     "allowJs": true ,
+//     "baseUrl": "./src",  
+//     "paths": {
+//       "*": ["*", "lib/*"]      // This tells TypeScript to treat 'lib' as an alias
+//     }                         // Allow JavaScript files if needed (optional)
+//   },
+//   "include": [
+//     "src/**/*.ts"                            // Include all TypeScript files in the "src" folder
+//   ],
+//   "exclude": [
+//     "node_modules"                           // Exclude node_modules folder
+//   ]
+// }
+
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "target": "es6",
+    "moduleResolution": "node",
+    "removeComments": true,
+    "sourceMap": false,
+
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "resolveJsonModule": true,
+
+    "skipLibCheck": true,
+    "allowJs": true,
+    // "checkJs": true,
+    
+    "strict": false,
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist/*", "src/static"],
+  "lib": ["es6"]
+}

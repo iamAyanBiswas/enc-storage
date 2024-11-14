@@ -1,0 +1,24 @@
+{
+  "name": "encrypted-storage",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "tsc && node dist/index.js",
+    "dev": "nodemon --watch src --ext ts --exec \"npm run build && node dist/index\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iamAyanBiswas/encrypted-storage.git"
+  },
+  "author": "Ayan Biswas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/iamAyanBiswas/encrypted-storage/issues"
+  },
+  "homepage": "https://github.com/iamAyanBiswas/encrypted-storage#readme",
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
+}
