@@ -10,6 +10,6 @@ function encStorage(){
         return value
     }
 
-
 }
+console.log("yess");
 
