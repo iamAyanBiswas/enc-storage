@@ -12,5 +12,5 @@ function encStorage(){
     }
 
 }
-// makeEncodingAlgo('l')
+makeEncodingAlgo('l')
 
