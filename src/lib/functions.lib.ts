@@ -13,7 +13,12 @@ function random(){
 }
 function makeEncodingAlgo(key:string){
     const max:number = 99
-    const min:number = 10
+    const min:number = 11
+    for(let i=0;i<10;i++){
+      console.log(encoding(String('ma')))
+      console.log(decoding(String('bWE=OTk=')))
+
+    }
 }
 
 
