@@ -16,7 +16,7 @@ function makeEncodingAlgo(key:string){
     const min:number = 11
     for(let i=0;i<10;i++){
       console.log(encoding(String('ma')))
-      console.log(decoding(String('bWE=OTk=')))
+      // console.log(decoding(String('bWE=OTk=')))
 
     }
 }
