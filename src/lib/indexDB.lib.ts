@@ -58,7 +58,7 @@
         };
   
         request.onerror = () => {
-          reject('Error adding data. The key may already exist or another issue occurred.');
+          reject('The key may already exist or another issue occurred.');
         };
       } catch (error) {
         reject(`Error opening database: ${error}`);
