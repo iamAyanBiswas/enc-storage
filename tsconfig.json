@@ -22,6 +22,11 @@
 //   ]
 // }
 
+
+
+
+
+
 {
   "compilerOptions": {
     "module": "CommonJS",
@@ -32,6 +37,7 @@
     "sourceMap": false,
 
     "outDir": "./dist",
+    "declaration": true,  
     "rootDir": "./src",
     "resolveJsonModule": true,
 
@@ -41,7 +47,9 @@
     
     "strict": false,
   },
-  "include": ["src"],
+  "include": [
+    "src/**/*.ts"
+  ],
   "exclude": ["node_modules", "dist/*", "src/static"],
   "lib": ["es6"]
 }

@@ -1,28 +1,44 @@
 //@ts-check
+import { randomIntegerInRange, randomString } from "random-crypto-api";
+import { generateKeyAuth, getKeyValue, encryption, decryption } from "./lib/functions.lib";
 
-import config from "./lib/config.lib";
-import { generateKeyAuth } from "./lib/functions.lib";
-import { randomString,randomIntegerInRange } from "./lib/random.lib";
 
 function encStorage() {
-    let generateKey = async (key="__primaryKey"): Promise<void> => {
-        let randomNumbet:number=randomIntegerInRange(10,20)
-        let keyValue:string=randomString(randomNumbet)
-        await generateKeyAuth(key,keyValue)
+    let generateKey = async (): Promise<void> => {
+        let randomNumbet: number = randomIntegerInRange(10, 20)
+        let keyValue: string = randomString(randomNumbet)
+        await generateKeyAuth("__primaryKey", keyValue)
     }
-    let getItem = (item: string, storageType: string = 'localstorage'):string => {
-        return item
+    let getItem = async (item: string, storageType: string = 'localstorage'): Promise<any> => {
+        if (storageType !== 'localstorage' || storageType !== 'localstorage') throw new Error("Invalid storageType ")
+        let encData: string;
+        storageType === "localstorage" ? encData = localStorage.getItem(item) : encData = sessionStorage.getItem(item)
+        if (encData === '') return ""
+        else {
+            try {
+                let encriptionKey: string = await getKeyValue("__primaryKey")
+                let values: any=decryption(encData,encriptionKey)
+                return values
+            } catch (_error) {
+                throw _error
+            }
+        }
     }
-    let setItem = (item: string, value: string):void => {
+    let setItem = async (item: string, value: string, storageType: string = 'localstorage'): Promise<void> => {
+        if (storageType !== 'localstorage' || storageType !== 'localstorage') throw new Error("Invalid storageType ")
+
+        try {
+            let encriptionKey: string = await getKeyValue("__primaryKey")
+            //enc part
+            let encData = encryption(value, encriptionKey)
+            storageType === "localstorage" ? localStorage.setItem(item, encData) : sessionStorage.setItem(item, encData)
+
+        } catch (_error) {
+            throw _error
+        }
     }
-    return {generateKey,getItem,setItem}
+    return { generateKey, getItem, setItem }
 }
 
-// encStorage().generateKey()
-// .then((e:unknown)=>{
-//     console.log("lol")
-// })
-// .catch((e:Event)=>{
-//     console.log("Some things went wrong")
-// })
+
 
