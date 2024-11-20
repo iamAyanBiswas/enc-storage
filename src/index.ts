@@ -1,6 +1,7 @@
 //@ts-check
 import { randomIntegerInRange, randomString } from "random-crypto-api";
 import { generateKeyAuth, getKeyValue, encryption, decryption } from "./lib/functions.lib";
+import { deleteDB } from "./lib/indexDB.lib";
 
 
 function encStorage() {
@@ -8,6 +9,9 @@ function encStorage() {
         let randomNumbet: number = randomIntegerInRange(10, 20)
         let keyValue: string = randomString(randomNumbet)
         await generateKeyAuth("__primaryKey", keyValue)
+    }
+    let deleteKey =async():Promise<void>=>{
+        await deleteDB("__encDB")
     }
     let getItem = async (item: string, storageType: string = 'localstorage'): Promise<any> => {
         if (storageType !== 'localstorage' || storageType !== 'localstorage') throw new Error("Invalid storageType ")
@@ -37,7 +41,7 @@ function encStorage() {
             throw _error
         }
     }
-    return { generateKey, getItem, setItem }
+    return { generateKey, deleteKey, getItem, setItem }
 }
 
 
