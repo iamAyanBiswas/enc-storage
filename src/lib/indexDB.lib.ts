@@ -58,6 +58,7 @@
         };
   
         request.onerror = () => {
+          console.log(request);
           reject('The key may already exist or another issue occurred.');
         };
       } catch (error) {
