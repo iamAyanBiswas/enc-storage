@@ -1,5 +1,6 @@
 # Exclude the TypeScript source folder (not needed in the package)
 src/
+test/
 
 # Exclude Git files and metadata
 .git/

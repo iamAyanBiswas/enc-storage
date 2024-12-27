@@ -3,6 +3,18 @@ import { randomString } from "random-crypto-api";
 import CryptoJS from "crypto-js";
 
 
+interface Object {
+  dbName?: string | undefined | null
+  objStore?: string | undefined | null
+  keyName?: string | undefined | null
+  envConfig?: boolean | undefined | null
+}
+
+
+
+
+
+
 //Base64 encoding
 function encoding(str: string): string {
   return btoa(unescape(encodeURIComponent(str)));
@@ -13,23 +25,22 @@ function decoding(encodedStr: string): string {
   return decodeURIComponent(escape(atob(encodedStr)));
 }
 
-function encryption(datas:any,encKey:string):string{
+function encryption(datas: any, encKey: string): string {
   let encData = CryptoJS.AES.encrypt(datas, encKey).toString();
   return encData
 }
-function decryption(encData:string,encKey:string):any{
-  let bytes  = CryptoJS.AES.decrypt(encData, encKey);
+function decryption(encData: string, encKey: string): any {
+  let bytes = CryptoJS.AES.decrypt(encData, encKey);
   let originalData = bytes.toString(CryptoJS.enc.Utf8);
   return originalData
 }
 
-async function generateKeyAuth(key: string, keyValue: string): Promise<void> {
+async function generateKeyAuth(keyValue: string, obj:Object): Promise<void> {
   let randomStr1 = encoding(randomString(4))
   let randomStr2 = encoding(randomString(6))
   let encodingKeyValue = encoding(keyValue)
   try {
-    await deleteDB("__encDB")
-    await addData("__encDB", key, String(randomStr1 + encodingKeyValue + randomStr2))
+    await addData(obj.dbName,obj.objStore, obj.keyName, String(randomStr1 + encodingKeyValue + randomStr2))
   } catch (_error) {
     throw _error
   }

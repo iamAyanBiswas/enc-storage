@@ -22,20 +22,20 @@
   };
   
   // Get data by key
-   const getData = (dbName: string, key: string): Promise<any> => {
+   const getData = (dbName: string,objStore:string,keyName:string): Promise<any> => {
     return new Promise(async (resolve, reject) => {
       try {
         const db = await openDB(dbName, 1);
-        const transaction = db.transaction('dataStore', 'readonly');
-        const objectStore = transaction.objectStore('dataStore');
-        const request = objectStore.get(key);
+        const transaction = db.transaction(objStore, 'readonly');
+        const objectStore = transaction.objectStore(objStore);
+        const request = objectStore.get(keyName);
   
         request.onsuccess = () => {
           resolve(request.result);
         };
   
         request.onerror = () => {
-          reject(`Error getting data for key ${key}`);
+          reject(`Error getting data for key ${keyName}`);
         };
       } catch (error) {
         reject(`Error opening database: ${error}`);
@@ -44,21 +44,21 @@
   };
   
   // Add data with autoIncrement enabled
-   const addData = (dbName: string, key:string, value: any): Promise<void> => {
+   const addData = (dbName: string, objStore:string, keyName:string, value: any): Promise<void> => {
     return new Promise(async (resolve, reject) => {
       try {
         const db = await openDB(dbName, 1);
-        const transaction = db.transaction('dataStore', 'readwrite');
-        const objectStore = transaction.objectStore('dataStore');
+        const transaction = db.transaction(objStore, 'readwrite');
+        const objectStore = transaction.objectStore(objStore);
   
-        const request = objectStore.add(value,key); // No need to specify the key, autoIncrement will handle it
+        const request = objectStore.put(value,keyName); // No need to specify the key, autoIncrement will handle it
   
         request.onsuccess = () => {
           resolve(); 
         };
   
-        request.onerror = () => {
-          console.log(request);
+        request.onerror = (e) => {
+          console.log({request,e});
           reject('The key may already exist or another issue occurred.');
         };
       } catch (error) {
@@ -68,36 +68,36 @@
   };
   
   // Update data by key
-   const updateData = (dbName: string, key: string, value: any): Promise<void> => {
+   const updateData = (dbName: string, objStore:string, keyName:string, value: any): Promise<void> => {
     return new Promise(async (resolve, reject) => {
       try {
         const db = await openDB(dbName, 1);
-        const transaction = db.transaction('dataStore', 'readwrite');
-        const objectStore = transaction.objectStore('dataStore');
+        const transaction = db.transaction(objStore, 'readwrite');
+        const objectStore = transaction.objectStore(objStore);
   
         // First, check if the key exists
-        const request = objectStore.get(key);
+        const request = objectStore.get(keyName);
   
         request.onsuccess = () => {
           if (request.result === undefined) {
-            reject(`Key "${key}" does not exist in the database.`);
+            reject(`Key "${keyName}" does not exist in the database.`);
             return;
           }
   
           // Proceed to update the record
-          const updateRequest = objectStore.put(value, key); // We pass the value and key to update
+          const updateRequest = objectStore.put(value, keyName); // We pass the value and key to update
   
           updateRequest.onsuccess = () => {
             resolve();
           };
   
           updateRequest.onerror = () => {
-            reject(`Error updating data for key "${key}"`);
+            reject(`Error updating data for key "${keyName}"`);
           };
         };
   
         request.onerror = () => {
-          reject(`Error checking key "${key}" in the database`);
+          reject(`Error checking key "${keyName}" in the database`);
         };
       } catch (error) {
         reject(`Error opening database: ${error}`);
@@ -106,20 +106,20 @@
   };
   
   // Delete data by key
-   const deleteData = (dbName: string, key: string): Promise<void> => {
+   const deleteData = (dbName: string, objStore:string, keyName:string,): Promise<void> => {
     return new Promise(async (resolve, reject) => {
       try {
         const db = await openDB(dbName, 1);
-        const transaction = db.transaction('dataStore', 'readwrite');
-        const objectStore = transaction.objectStore('dataStore');
-        const request = objectStore.delete(key);
+        const transaction = db.transaction(objStore, 'readwrite');
+        const objectStore = transaction.objectStore(objStore);
+        const request = objectStore.delete(keyName);
   
         request.onsuccess = () => {
           resolve();
         };
   
         request.onerror = () => {
-          reject(`Error deleting data for key "${key}"`);
+          reject(`Error deleting data for key "${keyName}"`);
         };
       } catch (error) {
         reject(`Error opening database: ${error}`);
