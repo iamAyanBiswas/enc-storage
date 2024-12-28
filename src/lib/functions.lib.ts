@@ -3,7 +3,13 @@ import { randomString } from "random-crypto-api";
 import CryptoJS from "crypto-js";
 
 
-interface Object {
+interface generateKeyAuthObject {
+  dbName?: string | undefined | null
+  objStore?: string | undefined | null
+  keyName?: string | undefined | null
+  envConfig?: boolean | undefined | null
+}
+interface getKeyValueObject {
   dbName?: string | undefined | null
   objStore?: string | undefined | null
   keyName?: string | undefined | null
@@ -12,17 +18,14 @@ interface Object {
 
 
 
-
-
-
 //Base64 encoding
 function encoding(str: string): string {
-  return btoa(unescape(encodeURIComponent(str)));
+  return btoa(encodeURIComponent(str));
 }
 
 // Decode a Base64 encoded string
 function decoding(encodedStr: string): string {
-  return decodeURIComponent(escape(atob(encodedStr)));
+  return decodeURIComponent(atob(encodedStr));
 }
 
 function encryption(datas: any, encKey: string): string {
@@ -35,26 +38,35 @@ function decryption(encData: string, encKey: string): any {
   return originalData
 }
 
-async function generateKeyAuth(keyValue: string, obj:Object): Promise<void> {
+async function generateKeyAuth(keyValue: string, obj?: generateKeyAuthObject): Promise<void> {
   let randomStr1 = encoding(randomString(4))
   let randomStr2 = encoding(randomString(6))
   let encodingKeyValue = encoding(keyValue)
+
+  let dataObj = {
+    value: String(randomStr1 + encodingKeyValue + randomStr2),
+    envConfig: obj.envConfig
+  }
   try {
-    await addData(obj.dbName,obj.objStore, obj.keyName, String(randomStr1 + encodingKeyValue + randomStr2))
+    await addData(obj.dbName, obj.objStore, obj.keyName, encoding(JSON.stringify(dataObj)))
   } catch (_error) {
     throw _error
   }
 }
 
 
-async function getKeyValue(key: string): Promise<string> {
+async function getKeyValue(obj?: getKeyValueObject, envValue?: string): Promise<string> {
   try {
-    const value: string = await getData("__encDB", key)
+    let data: string = await getData(obj.dbName, obj.objStore, obj.keyName)
+    data=decoding(data)
+    const objData=JSON.parse(data)
+    const value=objData.value
     const len = value.length
     const firstIdx = 0 + 8
     const lastIdx = (len - 1) - 8
     let result: string = value.slice(firstIdx, lastIdx);
     result = decoding(result)
+    objData.envConfig===true?result+=envValue:''
     return result
   } catch (_error) {
     throw _error

@@ -2,52 +2,61 @@
 import { randomIntegerInRange, randomString } from "random-crypto-api";
 import { generateKeyAuth, getKeyValue, encryption, decryption } from "./lib/functions.lib";
 import { deleteDB } from "./lib/indexDB.lib";
-import DEFAULT from "./lib/default.lib";
+import DEFAULT_INDEX_DB from "./lib/default.lib";
 
 
 const encStorage = (): any => {
+
+    //Define Type 
+
     interface generateKeyConfigType {
         dbName?: string | undefined | null
         objStore?: string | undefined | null
         keyName?: string | undefined | null
         envConfig?: boolean | undefined | null
     }
-
-    interface setIAndGetItemConfigType{
+    interface setAndGetItemConfigType {
         dbName?: string | undefined | null
         objStore?: string | undefined | null
         keyName?: string | undefined | null
-        envConfig?: boolean | undefined | null
         storageType?: string | undefined | null
     }
     return {
         generateKey: async (envKeyValue: string, obj: generateKeyConfigType = {}): Promise<boolean> => {
 
-            let object={
-                dbName : obj.dbName || DEFAULT.dbName,
-                objStore : obj.objStore || DEFAULT.objStore,
-                keyName : obj.keyName || DEFAULT.keyName,
-                envConfig : obj.envConfig || DEFAULT.envConfig,
+            let object = {
+                dbName: obj.dbName || DEFAULT_INDEX_DB.dbName,
+                objStore: obj.objStore || DEFAULT_INDEX_DB.objStore,
+                keyName: obj.keyName || DEFAULT_INDEX_DB.keyName,
+                envConfig: obj.envConfig || DEFAULT_INDEX_DB.envConfig,
             }
 
-            
+
             let randomNumber: number = randomIntegerInRange(10, 20)
             let keyValue: string = randomString(randomNumber)
-            await generateKeyAuth(keyValue,object)
+            await generateKeyAuth(keyValue, object)
             return true
         },
         deleteKey: async (): Promise<void> => {
             await deleteDB("__encDB")
         },
-        getItem: async (item: string, obj:setIAndGetItemConfigType={}): Promise<any> => {
-            let storageType=obj?.storageType
-            if (storageType !== 'localstorage' || storageType !== 'localstorage') throw new Error("Invalid storageType ")
+        getItem: async (item: string, obj: setAndGetItemConfigType = {}, envValue: string): Promise<any> => {
+            let object = {
+                dbName: obj.dbName || DEFAULT_INDEX_DB.dbName,
+                objStore: obj.objStore || DEFAULT_INDEX_DB.objStore,
+                keyName: obj.keyName || DEFAULT_INDEX_DB.keyName,
+            }
+            let storageType: string = obj?.storageType
+            storageType = storageType.toLowerCase()
+
+            if (storageType !== 'localstorage' && storageType !== 'sessionstorage') throw new Error("Invalid storageType ")
+
             let encData: string;
             storageType === "localstorage" ? encData = localStorage.getItem(item) : encData = sessionStorage.getItem(item)
             if (encData === '') return ""
             else {
                 try {
-                    let encriptionKey: string = await getKeyValue("__primaryKey")
+                    let encriptionKey: string = await getKeyValue(object,envValue)
                     let values: any = decryption(encData, encriptionKey)
                     return values
                 } catch (_error) {
@@ -55,11 +64,17 @@ const encStorage = (): any => {
                 }
             }
         },
-        setItem: async (item: string, value: string, storageType: string = 'localstorage'): Promise<void> => {
-            if (storageType !== 'localstorage' || storageType !== 'localstorage') throw new Error("Invalid storageType ")
+        setItem: async (item: string, value: any, obj: setAndGetItemConfigType = {}, envValue: string): Promise<void> => {
+            let object = {
+                dbName: obj.dbName || DEFAULT_INDEX_DB.dbName,
+                objStore: obj.objStore || DEFAULT_INDEX_DB.objStore,
+                keyName: obj.keyName || DEFAULT_INDEX_DB.keyName,
+            }
+            let storageType = obj?.storageType
+            if (storageType !== 'localstorage' && storageType !== 'sessionstorage') throw new Error("Invalid storageType ")
 
             try {
-                let encriptionKey: string = await getKeyValue("__primaryKey")
+                let encriptionKey: string = await getKeyValue(object, envValue)
                 //enc part
                 let encData = encryption(value, encriptionKey)
                 storageType === "localstorage" ? localStorage.setItem(item, encData) : sessionStorage.setItem(item, encData)

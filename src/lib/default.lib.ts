@@ -1,8 +1,8 @@
-const DEFAULT = {
+const DEFAULT_INDEX_DB = {
     dbName: "__encDB",
     objStore: "dataStore",
     keyName:"__primaryKey",
-    envConfig: false
+    envConfig: false,
 }
 
-export default DEFAULT
+export default DEFAULT_INDEX_DB
