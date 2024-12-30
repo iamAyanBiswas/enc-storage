@@ -57,8 +57,9 @@ const encStorage = (): any => {
             else {
                 try {
                     let encriptionKey: string = await getKeyValue(object,envValue)
-                    let values: any = decryption(encData, encriptionKey)
-                    return values
+                    let value: any = decryption(encData, encriptionKey)
+                    let stringValue=JSON.parse(value)
+                    return stringValue
                 } catch (_error) {
                     throw _error
                 }
@@ -70,13 +71,14 @@ const encStorage = (): any => {
                 objStore: obj.objStore || DEFAULT_INDEX_DB.objStore,
                 keyName: obj.keyName || DEFAULT_INDEX_DB.keyName,
             }
-            let storageType = obj?.storageType
+            let storageType = obj.storageType || DEFAULT_INDEX_DB.storageType
             if (storageType !== 'localstorage' && storageType !== 'sessionstorage') throw new Error("Invalid storageType ")
 
             try {
                 let encriptionKey: string = await getKeyValue(object, envValue)
                 //enc part
-                let encData = encryption(value, encriptionKey)
+                let valueString=JSON.stringify(value)
+                let encData = encryption(valueString, encriptionKey)
                 storageType === "localstorage" ? localStorage.setItem(item, encData) : sessionStorage.setItem(item, encData)
 
             } catch (_error) {
