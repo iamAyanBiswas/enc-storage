@@ -1,5 +1,5 @@
 // Open DB function to open the database with autoIncrement option
- const openDB = (dbName: string, version: number): Promise<IDBDatabase> => {
+ const openDB = (dbName: string, objStore:string, version?: number): Promise<IDBDatabase> => {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(dbName, version);
   
@@ -14,8 +14,8 @@
       request.onupgradeneeded = (event) => {
         const db = (event.target as IDBRequest).result;
         // Create an object store with autoIncrement option
-        if (!db.objectStoreNames.contains('dataStore')) {
-          db.createObjectStore('dataStore', { autoIncrement: true });
+        if (!db.objectStoreNames.contains(objStore)) {
+          db.createObjectStore(objStore, { autoIncrement: true });
         }
       };
     });
@@ -25,7 +25,7 @@
    const getData = (dbName: string,objStore:string,keyName:string): Promise<any> => {
     return new Promise(async (resolve, reject) => {
       try {
-        const db = await openDB(dbName, 1);
+        const db = await openDB(dbName,objStore, 1);
         const transaction = db.transaction(objStore, 'readonly');
         const objectStore = transaction.objectStore(objStore);
         const request = objectStore.get(keyName);
@@ -47,7 +47,7 @@
    const addData = (dbName: string, objStore:string, keyName:string, value: any): Promise<void> => {
     return new Promise(async (resolve, reject) => {
       try {
-        const db = await openDB(dbName, 1);
+        const db = await openDB(dbName,objStore, 1);
         const transaction = db.transaction(objStore, 'readwrite');
         const objectStore = transaction.objectStore(objStore);
   
@@ -71,7 +71,7 @@
    const updateData = (dbName: string, objStore:string, keyName:string, value: any): Promise<void> => {
     return new Promise(async (resolve, reject) => {
       try {
-        const db = await openDB(dbName, 1);
+        const db = await openDB(dbName,objStore, 1);
         const transaction = db.transaction(objStore, 'readwrite');
         const objectStore = transaction.objectStore(objStore);
   
@@ -109,7 +109,7 @@
    const deleteData = (dbName: string, objStore:string, keyName:string,): Promise<void> => {
     return new Promise(async (resolve, reject) => {
       try {
-        const db = await openDB(dbName, 1);
+        const db = await openDB(dbName,objStore, 1);
         const transaction = db.transaction(objStore, 'readwrite');
         const objectStore = transaction.objectStore(objStore);
         const request = objectStore.delete(keyName);
